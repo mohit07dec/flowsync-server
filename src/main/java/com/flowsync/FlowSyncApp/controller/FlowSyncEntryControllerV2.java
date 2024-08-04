@@ -2,10 +2,15 @@ package com.flowsync.FlowSyncApp.controller;
 
 import com.flowsync.FlowSyncApp.entity.FlowsyncEntry;
 import com.flowsync.FlowSyncApp.service.FlowSyncEntryService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/FlowSync")
@@ -15,29 +20,47 @@ public class FlowSyncEntryControllerV2 {
     private FlowSyncEntryService flowsyncEntryService;
 
     @PostMapping
-    public boolean createFlowSyncEntry(@RequestBody FlowsyncEntry newEntry){
-        flowsyncEntryService.saveEntry(newEntry);
-        return true;
+    public ResponseEntity<FlowsyncEntry> createFlowSyncEntry(@RequestBody FlowsyncEntry newEntry){
+        try {
+            newEntry.setDate(LocalDateTime.now());
+            flowsyncEntryService.saveEntry(newEntry);
+            return new ResponseEntity<>(newEntry, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping
     public List<FlowsyncEntry> getAll(){
-        return null;
+        return flowsyncEntryService.getAll();
     }
 
     @GetMapping("id/{queryId}")
-    public FlowsyncEntry getById(@PathVariable long queryId){
-        return null;
+    public ResponseEntity<FlowsyncEntry> getById(@PathVariable ObjectId queryId){
+        Optional<FlowsyncEntry> fsyncEntry = flowsyncEntryService.findById(queryId);
+        if(fsyncEntry.isPresent()){
+            return new ResponseEntity<>(fsyncEntry.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("id/{queryId}")
-    public FlowsyncEntry deleteById(@PathVariable long queryId){
-        return null;
+    public ResponseEntity<?> deleteById(@PathVariable ObjectId queryId){
+        flowsyncEntryService.deleteById(queryId);
+        return new ResponseEntity<>(queryId, HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("id/{queryId}")
-    public boolean UpdateById(@PathVariable long queryId, @RequestBody FlowsyncEntry newEntry){
-        return true;
+    public ResponseEntity<?> UpdateById(@PathVariable ObjectId queryId, @RequestBody FlowsyncEntry newEntry){
+        FlowsyncEntry old = flowsyncEntryService.findById(queryId).orElse(null);
+        if(old != null){
+            old.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle() : old.getTitle());
+            old.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent() : old.getContent());
+            flowsyncEntryService.saveEntry(old);
+            return new ResponseEntity<>(old, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
 
 }
