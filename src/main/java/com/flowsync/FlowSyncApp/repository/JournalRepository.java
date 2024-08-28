@@ -1,8 +1,8 @@
 package com.flowsync.FlowSyncApp.repository;
 
-import com.flowsync.FlowSyncApp.entity.FlowsyncEntry;
+import com.flowsync.FlowSyncApp.entity.JournalEntry;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface FlowSyncRepo extends MongoRepository<FlowsyncEntry, ObjectId>{
+public interface JournalRepository extends MongoRepository<JournalEntry, ObjectId>{
 }

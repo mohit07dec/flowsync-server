@@ -1,9 +1,7 @@
 package com.flowsync.FlowSyncApp.service;
 
-import com.flowsync.FlowSyncApp.entity.FlowsyncEntry;
 import com.flowsync.FlowSyncApp.entity.User;
-import com.flowsync.FlowSyncApp.repository.FlowSyncRepo;
-import com.flowsync.FlowSyncApp.repository.UserRepo;
+import com.flowsync.FlowSyncApp.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +13,7 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
-    private UserRepo userRepo;
+    private UserRepository userRepo;
 
     public void saveEntry(User user) {
         userRepo.save(user);
