@@ -1,7 +1,7 @@
 package com.flowsync.FlowSyncApp.controller;
 
-import com.flowsync.FlowSyncApp.entity.FlowsyncEntry;
-import com.flowsync.FlowSyncApp.service.FlowSyncEntryService;
+import com.flowsync.FlowSyncApp.entity.JournalEntry;
+import com.flowsync.FlowSyncApp.service.JournalEntryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,16 +14,16 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/FlowSync")
-public class FlowSyncEntryControllerV2 {
+public class JournalEntryController {
 
     @Autowired
-    private FlowSyncEntryService flowsyncEntryService;
+    private JournalEntryService journalEntryService;
 
     @PostMapping
-    public ResponseEntity<FlowsyncEntry> createFlowSyncEntry(@RequestBody FlowsyncEntry newEntry){
+    public ResponseEntity<JournalEntry> createFlowSyncEntry(@RequestBody JournalEntry newEntry){
         try {
             newEntry.setDate(LocalDateTime.now());
-            flowsyncEntryService.saveEntry(newEntry);
+            journalEntryService.saveEntry(newEntry);
             return new ResponseEntity<>(newEntry, HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -31,32 +31,32 @@ public class FlowSyncEntryControllerV2 {
     }
 
     @GetMapping
-    public List<FlowsyncEntry> getAll(){
-        return flowsyncEntryService.getAll();
+    public List<JournalEntry> getAll(){
+        return journalEntryService.getAll();
     }
 
     @GetMapping("id/{queryId}")
-    public ResponseEntity<FlowsyncEntry> getById(@PathVariable ObjectId queryId){
-        Optional<FlowsyncEntry> fsyncEntry = flowsyncEntryService.findById(queryId);
-        if(fsyncEntry.isPresent()){
-            return new ResponseEntity<>(fsyncEntry.get(), HttpStatus.OK);
+    public ResponseEntity<JournalEntry> getById(@PathVariable ObjectId queryId){
+        Optional<JournalEntry> journalEntry = journalEntryService.findById(queryId);
+        if(journalEntry.isPresent()){
+            return new ResponseEntity<>(journalEntry.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("id/{queryId}")
     public ResponseEntity<?> deleteById(@PathVariable ObjectId queryId){
-        flowsyncEntryService.deleteById(queryId);
+        journalEntryService.deleteById(queryId);
         return new ResponseEntity<>(queryId, HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("id/{queryId}")
-    public ResponseEntity<?> UpdateById(@PathVariable ObjectId queryId, @RequestBody FlowsyncEntry newEntry){
-        FlowsyncEntry old = flowsyncEntryService.findById(queryId).orElse(null);
+    public ResponseEntity<?> UpdateById(@PathVariable ObjectId queryId, @RequestBody JournalEntry newEntry){
+        JournalEntry old = journalEntryService.findById(queryId).orElse(null);
         if(old != null){
             old.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle() : old.getTitle());
             old.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent() : old.getContent());
-            flowsyncEntryService.saveEntry(old);
+            journalEntryService.saveEntry(old);
             return new ResponseEntity<>(old, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

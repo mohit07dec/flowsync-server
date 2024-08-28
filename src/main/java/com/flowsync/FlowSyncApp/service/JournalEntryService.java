@@ -1,7 +1,7 @@
 package com.flowsync.FlowSyncApp.service;
 
-import com.flowsync.FlowSyncApp.entity.FlowsyncEntry;
-import com.flowsync.FlowSyncApp.repository.FlowSyncRepo;
+import com.flowsync.FlowSyncApp.entity.JournalEntry;
+import com.flowsync.FlowSyncApp.repository.JournalRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,20 +10,20 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class FlowSyncEntryService {
+public class JournalEntryService {
 
     @Autowired
-    private FlowSyncRepo flowSyncRepo;
+    private JournalRepository flowSyncRepo;
 
-    public void saveEntry(FlowsyncEntry flowsyncEntry){
+    public void saveEntry(JournalEntry flowsyncEntry){
         flowSyncRepo.save(flowsyncEntry);
     }
 
-    public List<FlowsyncEntry> getAll(){
+    public List<JournalEntry> getAll(){
         return flowSyncRepo.findAll();
     }
 
-    public Optional<FlowsyncEntry> findById(ObjectId id){
+    public Optional<JournalEntry> findById(ObjectId id){
         return flowSyncRepo.findById(id);
     }
 
