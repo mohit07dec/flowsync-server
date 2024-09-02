@@ -11,17 +11,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@EnableTransactionManagement
 public class FlowSyncApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(FlowSyncApplication.class, args);
 	}
 
-	@Bean
-	public PlatformTransactionManager add(MongoDatabaseFactory dbFactory){
-		return new MongoTransactionManager(dbFactory);
-	}
 }
-//PlatformTransactionManager
-//MongoTrasactionManager
+
