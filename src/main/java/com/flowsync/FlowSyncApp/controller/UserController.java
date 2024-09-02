@@ -17,7 +17,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public List<User> getAll() {
+    public List<User> getAllUsers() {
         return userService.getAll();
     }
 
@@ -31,14 +31,14 @@ public class UserController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<User> updateUserById(@RequestBody User user) {
-        User updatedUser = userService.findByUserName(user.getUserName());
-        if(updatedUser != null){
-            updatedUser.setUserName(user.getUserName() != null && !user.getUserName().equals("") ? user.getUserName() : updatedUser.getUserName());
-            updatedUser.setPassword(user.getPassword() != null && !user.getPassword().equals("") ? user.getPassword() : updatedUser.getPassword());
-            userService.saveEntry(updatedUser);
-            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    @PutMapping("/{userName}")
+    public ResponseEntity<User> updateUserById(@RequestBody User user, @PathVariable String userName) {
+        User userInDb = userService.findByUserName(userName);
+        if(userInDb != null){
+            userInDb.setUserName(user.getUserName());
+            userInDb.setPassword(user.getPassword());
+            userService.saveEntry(userInDb);
+            return new ResponseEntity<>(userInDb, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
