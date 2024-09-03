@@ -28,7 +28,7 @@ public class JournalEntryService {
             JournalEntry saved = journalEntryRepository.save(journalEntry);
             user.getJournalEntries().add(saved);
             //user.setUserName(null);
-            userService.saveEntry(user);
+            userService.saveNewUser(user);
         }
         catch (Exception e) {
             System.out.println(e);
@@ -50,7 +50,7 @@ public class JournalEntryService {
     public void deleteById(ObjectId id, String userName){
         User user = userService.findByUserName(userName);
         user.getJournalEntries().removeIf(journalEntry -> journalEntry.getId().equals(id));
-        userService.saveEntry(user);
+        userService.saveNewUser(user);
         journalEntryRepository.deleteById(id);
     }
 }
